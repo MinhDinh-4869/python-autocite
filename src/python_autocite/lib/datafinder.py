@@ -9,12 +9,16 @@ class Datafinder:
                 {'name': 'author'},
                 {'property': 'article:author'},
                 {'property': 'author'},
-                {'rel': 'author'}
+                {'rel': 'author'},
+                {'property': 'og:site_name'}
                 ]
 
+        tags = ["meta", ""]
+
         author_elements = []
-        for s in searches:
-            author_elements += self._soup.find_all(attrs=s)
+        for t in tags:
+            for s in searches:
+                author_elements += self._soup.find_all(t, attrs=s)
 
         for el in author_elements:
             author = self._get_data_from_element(el)
@@ -26,13 +30,16 @@ class Datafinder:
 
     def get_title(self):
         searches = [
-                {'property': 'og:title'}
+                {'property': 'og:title'},
+                {'class': 'title'}
                 ]
+        tags = ["title", "meta", ""]
 
-        for s in searches:
-            el = self._soup.find(attrs=s)
-            if (el is not None):
-                return self._get_data_from_element(el)
+        for t in tags:
+            for s in searches:
+                el = self._soup.find(t, attrs=s)
+                if (el is not None):
+                    return self._get_data_from_element(el)
 
         return '[[[TITLE]]]'
 
@@ -40,6 +47,8 @@ class Datafinder:
         searches = [
                 {'name': 'date'},
                 {'property': 'published_time'},
+                {'property': 'article:published_time'},
+                {'property': 'article:modified_time'},
                 {'name': 'timestamp'},
                 {'class': 'submitted-date'},
                 {'class': 'posted-on'},
@@ -47,10 +56,12 @@ class Datafinder:
                 {'class': 'date'},
 
                 ]
-        for s in searches:
-            el = self._soup.find(attrs=s)
-            if (el is not None):
-                return self._get_data_from_element(el)
+        tags = ["meta", ""]
+        for t in tags:
+            for s in searches:
+                el = self._soup.find(t, attrs=s)
+                if (el is not None):
+                    return self._get_data_from_element(el)
 
         return '[[[PUBLICATION DATE]]]'
 
